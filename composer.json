@@ -1,0 +1,24 @@
+{
+    "name": "osynapsy.net/osynapsy-net",
+    "version": "0.1",
+    "homepage": "http://www.osynapsy.net/net",
+    "type": "library",
+    "description": "Osynapsy net utilities",
+    "keywords": ["Osynapsy", "Net library"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Pietro Celeste",
+            "email": "p.celeste@osynapsy.net",
+            "homepage": "https://github.com/osynapsy/osynapsy-net/wiki"
+        }
+    ],
+    "require": {
+        "php" : ">=7.2.0"
+    },
+    "autoload" : {
+        "psr-4": {
+            "Osynapsy\\Net\\": "src/Osynapsy/Net/"
+        }
+    }
+}

@@ -1,67 +1,5 @@
 <?php
 
-/*
- * This file is part of the Osynapsy package.
- *
- * (c) Pietro Celeste <p.celeste@osynapsy.org>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
-namespace Osynapsy\Net\Smtp;
-
-/**
- * KM_Mailer is a SMTP Class for PHP, Version 1.5
- * created by KidMoses (Howard Walsh)
- *
- * This is a smiple SMTP class that supports secure login
- * through TLS or SSL connections. Can be used to send email
- * through GMail for example.
- *
- * Email can be sent as either plain text, html text or a
- * combination of both.
-
- * Please send support questions to support@kidmoses.com
- *
- * INSTRUCTIONS
- * Create an instance of the class with a call to :
- * $mail = new KM_Mailer(server, port, username=null, password=null, secure=null);
- *
- * server : the name of the server you are connecting to
- * port : the port number to use (typically 25, 465 or 587)
- * username : your username needed to log into the server
- * password : the password needed to log into the server
- * secure : can be tls, ssl or none
- *
- * You can check if your have successfully logged in by checking $mail->isLogin
- *
- * Once the instance is created, you can send mail by calling :
- * $mail->send(from, to, subject, body, headers = optional);
- *
- * from : sender's email address (myname@mydomain.com OR MyName <myname@mydomain.com>)
- * to : recipient's email address (ie: yourname@yourdomain.com OR YourName <yourname@yourdomain.com>)
- * subject : email subject
- * body : email message body, usually in HTML format
- * headers : any special headers required
- *
- * See example.php for more tips
- *
- * In this version you can also add multiple recipents, carbon-copies(CC), blind-copies(BCC) and attachments
- * For example:
- * $mail->addRecipient("yourname@yourdomain.com");
- * $mail->addCC("yourname@yourdomain.com");
- * $mail->addBCC("yourname@yourdomain.com");
- * $mail->addAttachment("pathToAttachment");
- *
- * To clear recipients and attachments use:
- * $mail->clearRecipients();
- * $mail->clearCC();
- * $mail->clearBCC();
- * $mail->clearAttachments();
- *
- **/
-
 /**
  * Copyright (c) 2011, Howard Walsh, KidMoses.com.
  * All rights reserved.
@@ -97,6 +35,59 @@ namespace Osynapsy\Net\Smtp;
  * OF SUCH DAMAGE.
  **/
 
+namespace Osynapsy\Net\Smtp;
+
+/**
+ * Osynapsy\Net\Smtp\Client is derived by KM_Mailer 1.5
+ * KM_Mailer is a SMTP Class for PHP, Version 1.5
+ * * created by KidMoses (Howard Walsh)
+ *
+ * This is a smiple SMTP class that supports secure login
+ * through TLS or SSL connections. Can be used to send email
+ * through GMail for example.
+ *
+ * Email can be sent as either plain text, html text or a
+ * combination of both.
+
+ * Please send support questions to support@kidmoses.com
+ *
+ * INSTRUCTIONS
+ * Create an instance of the class with a call to :
+ * $mail = new Osynapsy\Net\Smtp\Client(server, port, username=null, password=null, secure=null);
+ *
+ * server : the name of the server you are connecting to
+ * port : the port number to use (typically 25, 465 or 587)
+ * username : your username needed to log into the server
+ * password : the password needed to log into the server
+ * secure : can be tls, ssl or none
+ *
+ * You can check if your have successfully logged in by checking $mail->isLogin
+ *
+ * Once the instance is created, you can send mail by calling :
+ * $mail->send(from, to, subject, body, headers = optional);
+ *
+ * from : sender's email address (myname@mydomain.com OR MyName <myname@mydomain.com>)
+ * to : recipient's email address (ie: yourname@yourdomain.com OR YourName <yourname@yourdomain.com>)
+ * subject : email subject
+ * body : email message body, usually in HTML format
+ * headers : any special headers required
+ *
+ * See example.php for more tips
+ *
+ * In this version you can also add multiple recipents, carbon-copies(CC), blind-copies(BCC) and attachments
+ * For example:
+ * $mail->addRecipient("yourname@yourdomain.com");
+ * $mail->addCC("yourname@yourdomain.com");
+ * $mail->addBCC("yourname@yourdomain.com");
+ * $mail->addAttachment("pathToAttachment");
+ *
+ * To clear recipients and attachments use:
+ * $mail->clearRecipients();
+ * $mail->clearCC();
+ * $mail->clearBCC();
+ * $mail->clearAttachments();
+ *
+ **/
 class Client
 {
     const NEWLINE = "\r\n";

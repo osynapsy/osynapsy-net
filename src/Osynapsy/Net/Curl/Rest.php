@@ -32,7 +32,7 @@ class Rest
         ]);
     }
 
-    private function appendHeaders(array $rawheaders = [])
+    private static function appendHeaders(array $rawheaders = [])
     {
         if (empty($rawheaders)) {
             return;

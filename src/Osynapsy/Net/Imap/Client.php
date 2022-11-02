@@ -34,6 +34,16 @@ class Client
 
     public function connect($mbox = 'INBOX')
     {
+
+        $this->connection = imap_open(
+            $this->connectionStringFactory($mbox),
+            $this->connectionParameters['username'],
+            $this->connectionParameters['password']
+        );
+    }
+
+    protected function connectionStringFactory($mbox)
+    {
         $connectionString = '{';
         $connectionString .= $this->connectionParameters['host'];
         $connectionString .= ':';
@@ -45,17 +55,7 @@ class Client
         }
         $connectionString .= '}';
         $connectionString .= $mbox;
-        //return $connectionString;
-        try {
-            $this->connection = imap_open(
-                $connectionString,
-                $this->connectionParameters['username'],
-                $this->connectionParameters['password']
-            );
-            return true;
-        } catch(\Exception $e) {
-            return $e->getMessage();
-        }
+        return $connectionString;
     }
 
     public function searchMessage($command)

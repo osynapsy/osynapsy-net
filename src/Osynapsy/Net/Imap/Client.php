@@ -34,12 +34,15 @@ class Client
 
     public function connect($mbox = 'INBOX')
     {
-
+        $connectionString = $this->connectionStringFactory($mbox);
         $this->connection = imap_open(
-            $this->connectionStringFactory($mbox),
+            $connectionString,
             $this->connectionParameters['username'],
             $this->connectionParameters['password']
         );
+        if (empty($this->connection)) {
+            throw new \Exception(sprintf("Imap connection error %s", imap_last_error()));
+        }
     }
 
     protected function connectionStringFactory($mbox)

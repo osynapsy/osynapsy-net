@@ -13,6 +13,10 @@ namespace Osynapsy\Net\Curl;
 
 class Rest
 {
+    const METHOD_PUT = 'PUT';
+    const METHOD_POST = 'POST';
+    const METHOD_GET = 'GET';
+
     private static $baseurl = '';
     private static $channel;
     private static $response;
@@ -46,11 +50,10 @@ class Rest
 
     private static function appendOptions(array $options)
     {
-        if (empty($options)) {
-            return;
-        }
-        foreach ($options as $option => $value) {
-            curl_setopt(self::$channel, $option, $value);
+        if (!empty($options)) {
+            foreach ($options as $option => $value) {
+                curl_setopt(self::$channel, $option, $value);
+            }
         }
     }
 
@@ -60,6 +63,12 @@ class Rest
         self::setProxy($proxy);
         self::appendOptions([\CURLOPT_CUSTOMREQUEST => "GET"]);
         return self::getResponse();
+    }
+
+    public static function getJson($url, array $header = [])
+    {
+        $header[] = 'Content-Type: application/json';
+        return self::get($url, $header);
     }
 
     private static function getResponse()
@@ -73,23 +82,30 @@ class Rest
         return self::$response;
     }
 
-    public static function post($url, $data, array $headers = [], array $options = [])
+    public static function post($url, $data, array $headers = [], array $options = [], $method = self::METHOD_POST)
     {
         self::init($url, $headers);
-        $options[\CURLOPT_POST] = true;
         $options[\CURLOPT_POSTFIELDS] = $data;
+        $options[\CURLOPT_POST] = true;
+        $options[\CURLOPT_CUSTOMREQUEST] = strtoupper($method);
         self::appendOptions($options);
         return self::getResponse(self::$channel);
     }
 
-    public static function postJson($url, $data)
+    protected static function jsonCall($url, $data, $method)
     {
         $json = json_encode($data, JSON_HEX_TAG|JSON_HEX_APOS|JSON_HEX_QUOT|JSON_HEX_AMP);
+        return self::post($url, $json, ['Content-Type' => 'application/json', 'Content-Length' => strlen($json)], [], $method);
+    }
 
-        return self::post($url, $json, [
-            'Content-Type' => 'application/json',
-            'Content-Length' => strlen($json)
-        ]);
+    public static function postJson($url, $data)
+    {
+        return self::jsonCall($url, $data, self::METHOD_POST);
+    }
+
+    public static function putJson($url, $data)
+    {
+        return self::jsonCall($url, $data, self::METHOD_PUT);
     }
 
     public static function setBaseUrl($url)
@@ -99,23 +115,19 @@ class Rest
 
     private static function setProxy($proxy)
     {
-        if (empty($proxy)) {
-            return;
+        if (!empty($proxy)) {
+            $proxyPart = explode(':', $proxy);
+            self::appendOptions([\CURLOPT_PROXY => $proxyPart[0], \CURLOPT_PROXYPORT => $proxyPart[1]]);
         }
-        $proxyPart = explode(':', $proxy);
-        self::appendOptions([
-            \CURLOPT_PROXY => $proxyPart[0],
-            \CURLOPT_PROXYPORT => $proxyPart[1]
-        ]);
     }
 
     private static function validateResponse()
     {
         if (self::$response->content === false) {
-            throw new \Exception(curl_errno(self::$channel), self::$response->code);
+            throw new \Exception(sprintf('Error false %s - %s', self::$response->code, curl_error(self::$channel)), self::$response->code);
         }
         if (self::$response->code !== 200) {
-            throw new \Exception(curl_errno(self::$channel), self::$response->code);
+            throw new \Exception(sprintf('Error !200 %s - %s', self::$response->code, self::$response->content), self::$response->code);
         }
     }
 }

@@ -31,6 +31,7 @@ class Rest
             \CURLOPT_COOKIEJAR => true,
             \CURLOPT_SSL_VERIFYHOST => false,
             \CURLOPT_SSL_VERIFYPEER => false,
+            \CURLINFO_HEADER_OUT => true,
             \CURLOPT_USERAGENT => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.131 Safari/537.36',
             \CURLOPT_RETURNTRANSFER => true
         ]);
@@ -57,29 +58,46 @@ class Rest
         }
     }
 
-    public static function get($url, $data = [], $headers = [], $proxy = null)
+    private static function getResponse($validateResponse = true)
+    {
+        self::$response  = new \stdClass();
+        self::$response->content = curl_exec(self::$channel);
+        self::$response->code = curl_getinfo(self::$channel, CURLINFO_HTTP_CODE);
+        self::$response->type = curl_getinfo(self::$channel, CURLINFO_CONTENT_TYPE);
+        self::$response->header = explode("\r\n", curl_getinfo(self::$channel, CURLINFO_HEADER_OUT));
+        if (!empty($validateResponse)) {
+            self::validateResponse();
+        }
+        curl_close(self::$channel);
+        return self::$response;
+    }
+    
+    public static function get($url, $data = [], $headers = [], $proxy = null, $validateResponse = true)
     {
         self::init($url . (empty($data) ? '' : '?'.http_build_query($data)), $headers);
         self::setProxy($proxy);
         self::appendOptions([\CURLOPT_CUSTOMREQUEST => "GET"]);
-        return self::getResponse();
+        return self::getResponse($validateResponse);
+    }
+    
+    public static function getCookie($url, array $data = [], array $headers = [])
+    {
+        $response = self::get($url, $data, $headers, null, false);
+        $cookies = [];
+        foreach($response->header as $header) {
+            if (str_contains($header, 'cookie:')) {
+                $cookies[] = str_replace('cookie: ', '', $header);
+            } elseif (str_contains($header, 'Set-Cookie:')) {
+                 $cookies[] = str_replace('Set-Cookie: ', '', $header);
+            }
+        }
+        return $cookies;
     }
 
     public static function getJson($url, array $header = [])
     {
         $header[] = 'Content-Type: application/json';
         return self::get($url, $header);
-    }
-
-    private static function getResponse()
-    {
-        self::$response  = new \stdClass();
-        self::$response->content = curl_exec(self::$channel);
-        self::$response->code = curl_getinfo(self::$channel, CURLINFO_HTTP_CODE);
-        self::$response->type = curl_getinfo(self::$channel, CURLINFO_CONTENT_TYPE);
-        self::validateResponse();
-        curl_close(self::$channel);
-        return self::$response;
     }
 
     public static function post($url, $data, array $headers = [], array $options = [], $method = self::METHOD_POST)

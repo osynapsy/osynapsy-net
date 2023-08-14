@@ -455,6 +455,16 @@ class Client
         $parts .= $attachmentBody . self::NEWLINE;
         return $parts;
     }
+    
+    protected function setCharset($charset)
+    {
+        $this->charset = sprintf("%s", $charset);
+    }
+    
+    protected function setContentType($contentType)
+    {
+        $this->contentType = $contentType;
+    }
 
     protected function raiseException($message)
     {

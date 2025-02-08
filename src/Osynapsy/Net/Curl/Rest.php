@@ -71,7 +71,7 @@ class Rest
         curl_close(self::$channel);
         return self::$response;
     }
-    
+
     public static function get($url, $data = [], $headers = [], $proxy = null, $validateResponse = true)
     {
         self::init($url . (empty($data) ? '' : '?'.http_build_query($data)), $headers);
@@ -79,7 +79,7 @@ class Rest
         self::appendOptions([\CURLOPT_CUSTOMREQUEST => "GET"]);
         return self::getResponse($validateResponse);
     }
-    
+
     public static function getCookie($url, array $data = [], array $headers = [])
     {
         $response = self::get($url, $data, $headers, null, false);
@@ -94,10 +94,10 @@ class Rest
         return $cookies;
     }
 
-    public static function getJson($url, array $header = [])
+    public static function getJson($url, array $data = [], array $header = [])
     {
         $header[] = 'Content-Type: application/json';
-        return self::get($url, $header);
+        return self::get($url, $data, $header);
     }
 
     public static function post($url, $data, array $headers = [], array $options = [], $method = self::METHOD_POST)

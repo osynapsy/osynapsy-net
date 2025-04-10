@@ -140,7 +140,7 @@ class Message
         if (empty($from)) {
             return null;
         }
-        return sprintf('%s <%s@%s>', $from[0]->personal, $from[0]->mailbox, $from[0]->host);
+        return sprintf('%s <%s@%s>', $from[0]->personal ?? '', $from[0]->mailbox, $from[0]->host);
     }
 
     public function getId()
